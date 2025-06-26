@@ -1,0 +1,6 @@
+@WH.SimpleMediator.Examples_HostAddress = http://localhost:5071
+
+GET {{WH.SimpleMediator.Examples_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
