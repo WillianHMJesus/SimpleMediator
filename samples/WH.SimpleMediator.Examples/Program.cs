@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using WH.SimpleMediator;
+using WH.SimpleMediator.Extensions.Microsoft.DependencyInjection;
 using WH.SimpleMediator.Examples.Commands;
 using WH.SimpleMediator.Examples.Events;
 using WH.SimpleMediator.Examples.Validations;

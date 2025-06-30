@@ -1,4 +1,3 @@
-﻿namespace WH.SimpleMediator
-{
-    public interface INotification { }
-}
+﻿namespace WH.SimpleMediator;
+
+public interface INotification { }

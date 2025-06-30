@@ -2,42 +2,34 @@
 using System.Threading.Tasks;
 using System.Threading;
 
-namespace WH.SimpleMediator
+namespace WH.SimpleMediator;
+
+internal class Mediator(IServiceProvider provider) : IMediator
 {
-    public class Mediator : IMediator
+    public async Task<TResponse> Send<TResponse>(IRequest<TResponse> request, CancellationToken cancellationToken = default)
     {
-        private readonly IServiceProvider _provider;
-
-        public Mediator(IServiceProvider provider)
+        if (request == null)
         {
-            _provider = provider;
+            throw new ArgumentNullException(nameof(request));
         }
 
-        public async Task<TResponse> Send<TResponse>(IRequest<TResponse> request, CancellationToken cancellationToken = default)
+        var wrapperType = typeof(RequestHandlerWrapper<,>).MakeGenericType(request.GetType(), typeof(TResponse));
+        var wrapper = (RequestHandlerWrapperBase<TResponse>)Activator.CreateInstance(wrapperType) ?? throw new InvalidOperationException();
+
+        return await wrapper.Handle(request, provider, cancellationToken);
+    }
+
+    public async Task Publish<TNotification>(TNotification notification, CancellationToken cancellationToken = default)
+        where TNotification : INotification
+    {
+        if (notification == null)
         {
-            if (request == null)
-            {
-                throw new ArgumentNullException(nameof(request));
-            }
-
-            var wrapperType = typeof(RequestHandlerWrapper<,>).MakeGenericType(request.GetType(), typeof(TResponse));
-            var wrapper = (RequestHandlerWrapperBase<TResponse>)Activator.CreateInstance(wrapperType) ?? throw new InvalidOperationException();
-
-            return await wrapper.Handle(request, _provider, cancellationToken);
+            throw new ArgumentNullException(nameof(notification));
         }
 
-        public async Task Publish<TNotification>(TNotification notification, CancellationToken cancellationToken = default)
-            where TNotification : INotification
-        {
-            if (notification == null)
-            {
-                throw new ArgumentNullException(nameof(notification));
-            }
+        var wrapperType = typeof(NotificationHandlerWrapper<>).MakeGenericType(notification.GetType());
+        var wrapper = (NotificationHandlerWrapperBase)Activator.CreateInstance(wrapperType) ?? throw new InvalidOperationException();
 
-            var wrapperType = typeof(NotificationHandlerWrapper<>).MakeGenericType(notification.GetType());
-            var wrapper = (NotificationHandlerWrapperBase)Activator.CreateInstance(wrapperType) ?? throw new InvalidOperationException();
-
-            await wrapper.Handle(notification, _provider, cancellationToken);
-        }
+        await wrapper.Handle(notification, provider, cancellationToken);
     }
 }

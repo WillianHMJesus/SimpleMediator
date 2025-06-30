@@ -1,4 +1,3 @@
-﻿namespace WH.SimpleMediator
-{
-    public interface IRequest<TResponse> { }
-}
+﻿namespace WH.SimpleMediator;
+
+public interface IRequest<TResponse> { }

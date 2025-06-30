@@ -2,9 +2,10 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
+	<LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
 	<Authors>Willian Hilton</Authors>
-	<Version>1.0.1</Version>
+	<Version>1.0.2</Version>
 	<PackageId>WH.SimpleMediator</PackageId>
 	<Product>WH.SimpleMediator</Product>
 	<Company>WH</Company>
@@ -15,7 +16,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="..\..\..\..\Users\Willian Hilton\Pictures\logo\wh-logo.jpeg">
+    <None Include="..\..\assets\logo\wh-logo.jpeg">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>

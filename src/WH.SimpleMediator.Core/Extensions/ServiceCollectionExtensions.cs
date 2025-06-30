@@ -2,36 +2,35 @@
 using System;
 using System.Linq;
 
-namespace WH.SimpleMediator
+namespace WH.SimpleMediator.Extensions.Microsoft.DependencyInjection;
+
+public static class ServiceCollectionExtensions
 {
-    public static class ServiceCollectionExtensions
+    public static IServiceCollection AddSimpleMediator(
+        this IServiceCollection services,
+        Action<MediatorServiceConfiguration> configuration)
     {
-        public static IServiceCollection AddSimpleMediator(
-            this IServiceCollection services,
-            Action<MediatorServiceConfiguration> configuration)
-        {
-            var serviceConfig = new MediatorServiceConfiguration();
-            configuration.Invoke(serviceConfig);
+        var serviceConfig = new MediatorServiceConfiguration();
+        configuration.Invoke(serviceConfig);
 
-            return services.AddSimpleMediator(serviceConfig);
+        return services.AddSimpleMediator(serviceConfig);
+    }
+
+    public static IServiceCollection AddSimpleMediator(
+       this IServiceCollection services,
+       MediatorServiceConfiguration configuration)
+    {
+        if (!configuration.AssembliesToRegister.Any())
+        {
+            throw new ArgumentException("No assemblies found to scan. Supply at least one assembly to scan for handlers.");
         }
 
-        public static IServiceCollection AddSimpleMediator(
-           this IServiceCollection services,
-           MediatorServiceConfiguration configuration)
-        {
-            if (!configuration.AssembliesToRegister.Any())
-            {
-                throw new ArgumentException("No assemblies found to scan. Supply at least one assembly to scan for handlers.");
-            }
+        services.AddSingleton<IMediator, Mediator>();
 
-            services.AddSingleton<IMediator, Mediator>();
+        ServiceRegistrar.RegisterHandlers(services, configuration.AssembliesToRegister, typeof(INotificationHandler<>));
+        ServiceRegistrar.RegisterHandlers(services, configuration.AssembliesToRegister, typeof(IRequestHandler<,>));
+        ServiceRegistrar.RegisterPipelineBehaviors(services, configuration.BehaviorsToRegister);
 
-            ServiceRegistrar.RegisterHandlers(services, configuration.AssembliesToRegister, typeof(INotificationHandler<>));
-            ServiceRegistrar.RegisterHandlers(services, configuration.AssembliesToRegister, typeof(IRequestHandler<,>));
-            ServiceRegistrar.RegisterPipelineBehaviors(services, configuration.BehaviorsToRegister);
-
-            return services;
-        }
+        return services;
     }
 }
