@@ -25,7 +25,7 @@ public static class ServiceCollectionExtensions
             throw new ArgumentException("No assemblies found to scan. Supply at least one assembly to scan for handlers.");
         }
 
-        services.AddSingleton<IMediator, Mediator>();
+        services.AddScoped<IMediator, Mediator>();
 
         ServiceRegistrar.RegisterHandlers(services, configuration.AssembliesToRegister, typeof(INotificationHandler<>));
         ServiceRegistrar.RegisterHandlers(services, configuration.AssembliesToRegister, typeof(IRequestHandler<,>));

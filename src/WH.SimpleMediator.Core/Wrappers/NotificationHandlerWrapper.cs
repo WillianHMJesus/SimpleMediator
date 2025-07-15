@@ -17,9 +17,7 @@ internal class NotificationHandlerWrapper<TNotification> : NotificationHandlerWr
 {
     public async override Task Handle(INotification notification, IServiceProvider serviceProvider, CancellationToken cancellationToken)
     {
-        using var scope = serviceProvider.CreateScope();
-
-        var handlers = scope.ServiceProvider.GetServices<INotificationHandler<TNotification>>();
+        var handlers = serviceProvider.GetServices<INotificationHandler<TNotification>>();
         var tasks = handlers.Select(x => x.Handle((TNotification)notification, cancellationToken));
 
         await Task.WhenAll(tasks);

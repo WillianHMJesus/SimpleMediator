@@ -5,7 +5,7 @@
 	<LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
 	<Authors>Willian Hilton</Authors>
-	<Version>1.0.2</Version>
+	<Version>1.0.3</Version>
 	<PackageId>WH.SimpleMediator</PackageId>
 	<Product>WH.SimpleMediator</Product>
 	<Company>WH</Company>

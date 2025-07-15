@@ -17,12 +17,10 @@ internal class RequestHandlerWrapper<TRequest, TResponse> : RequestHandlerWrappe
 {
     public override Task<TResponse> Handle(IRequest<TResponse> request, IServiceProvider serviceProvider, CancellationToken cancellationToken)
     {
-        using var scope = serviceProvider.CreateScope();
-
-        Task<TResponse> Handler(CancellationToken t = default) => scope.ServiceProvider.GetRequiredService<IRequestHandler<TRequest, TResponse>>()
+        Task<TResponse> Handler(CancellationToken t = default) => serviceProvider.GetRequiredService<IRequestHandler<TRequest, TResponse>>()
         .Handle((TRequest)request, t == default ? cancellationToken : t);
 
-        return scope.ServiceProvider
+        return serviceProvider
             .GetServices<IPipelineBehavior<TRequest, TResponse>>()
             .Reverse()
             .Aggregate((RequestHandlerDelegate<TResponse>)Handler,
